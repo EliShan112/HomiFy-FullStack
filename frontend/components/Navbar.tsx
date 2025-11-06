@@ -173,7 +173,7 @@ const Navbar = () => {
         ))}
 
         {/* Underline Indicator */}
-        {links && (
+        {activeIndex !== -1 && (
           <div className="absolute bottom-[-10] left-0 w-full h-1">
           <div
             className="h-1 bg-black rounded-full transition-all duration-300"

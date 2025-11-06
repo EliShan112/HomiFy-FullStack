@@ -1,16 +1,8 @@
 import type { NextFunction, Request, Response } from "express";
 import ExpressError from "../utils/ExpressError.js";
 import { Review } from "../models/review.js";
-
-interface CustomRequest extends Request {
-  user?: {
-    _id: any;
-    username: string;
-    email: string;
-  };
-}
-
-export const isReviewAuthor = async (req: CustomRequest, res: Response, next: NextFunction) => {
+  
+export const isReviewAuthor = async (req: Request, res: Response, next: NextFunction) => {
     try {
         let {reviewId} = req.params;
         let review = await Review.findById(reviewId);

@@ -17,7 +17,7 @@ const page = () => {
 
     const router = useRouter();
 
-    const [form, setForm] = useState({
+    const [form, setForm] = useState<SignupFormData>({
         email: "",
         username: "",
         password: ""
@@ -25,7 +25,7 @@ const page = () => {
 
     const [loading, setLoading] = useState(false);
     const {messageFlash, setMessageFlash} = useFlashMessage(3000)
-    const {user, setUser} = useAuth();
+    const {setUser} = useAuth();
 
     const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
         setForm({...form, [e.target.name]: e.target.value})
@@ -35,7 +35,7 @@ const page = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await axios.post("http://localhost:4000/signup", form);
+            const res = await axios.post("http://localhost:4000/signup", form, {withCredentials:true});
 
             setUser(res.data.user)
 
@@ -48,7 +48,7 @@ const page = () => {
                 password: ""
             });
 
-            router.push('/listing')
+            router.push('/listing');
 
         } catch (err) {
             if(axios.isAxiosError(err)){

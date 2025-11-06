@@ -1,13 +1,18 @@
-import { IUser } from "../../models/user";
+// types/express/index.d.ts
 import { Types } from "mongoose";
 
 declare global {
   namespace Express {
-    interface User extends IUser {
+    interface User {
       _id: Types.ObjectId;
       username: string;
       email: string;
     }
+    
+    interface Request {
+      user?: User;
+    }
   }
 }
-export {};
+
+// No export needed for declaration files

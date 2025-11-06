@@ -12,9 +12,13 @@
     "sourceMap": true,
     "verbatimModuleSyntax": true,
     "outDir": "./dist",
-    "types": ["node", "express-session"],
+    "types": ["node", "express"],
     "typeRoots": ["./types", "./node_modules/@types"]
   },
-  "include": ["./*.ts", "./models/**/*.ts","./init/**/*.ts", "./types", "**/*.d.ts",],
+  "include": [
+    "**/*.ts",
+    "**/*.d.ts",
+    "types/**/*.d.ts"
+  ],
   "exclude": ["node_modules", "dist"]
 }

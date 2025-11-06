@@ -11,14 +11,20 @@ import { User } from "./models/user.js";
 import session from "express-session";
 import type { SessionOptions } from "express-session"
 import userRoutes from "./routes/userRoute.js";
-    
+import dotenv from 'dotenv';
+
+dotenv.config();
+
 const app = express();
+
+//Cors
 app.use(cors({
     origin: "http://localhost:3000",
     credentials: true
 }));
-app.use(express.json());
 
+
+//Db connection
 const MONGO_URL = "mongodb://127.0.0.1:27017/Airbnb";
 
 main()
@@ -33,7 +39,7 @@ async function main(){
     await mongoose.connect(MONGO_URL);
 }
 
-
+//session options
 const sessionOptions: SessionOptions = {
     secret: "TheGreatSecretCodeOfEliShan112221",
     resave: false,
@@ -49,11 +55,6 @@ const sessionOptions: SessionOptions = {
 
 app.use(session(sessionOptions))
 
-app.get('/', (req: Request, res: Response)=>{
-    res.json({message: "This is homepage"});
-})
-
-
 //passport
 app.use(passport.initialize());
 app.use(passport.session());
@@ -62,9 +63,16 @@ passport.use(new LocalStrategy(User.authenticate()));
 passport.serializeUser(User.serializeUser() as any);
 passport.deserializeUser(User.deserializeUser() as any);
 
+//Multer route
+app.use("/listing", listingRoutes);
+
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
 
 //Routes
-app.use("/listing", listingRoutes);
+app.get('/', (req: Request, res: Response)=>{
+    res.json({message: "This is homepage"});
+})
 app.use("/listing/:id/review", reviewRoutes);
 app.use("/", userRoutes);
 

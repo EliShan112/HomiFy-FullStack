@@ -4,12 +4,19 @@ import { Review } from "./review.js";
 export interface IListing extends Document{
     title: string;
     description: string;
-    image: string;
+    image: {
+        url: string; 
+        filename: string;
+    }
     price: number;
     location: string;
     country: string;
     review: Types.ObjectId[];
     owner: Types.ObjectId;
+    geometry: {
+        type: string;
+        coordinates: number[];
+    }
 }
 
 const listingSchema = new Schema<IListing>({
@@ -24,11 +31,8 @@ const listingSchema = new Schema<IListing>({
     },
 
     image: {
-        url:{
-            type: String,
-            default: "https://unsplash.com/photos/coconut-palm-trees-in-hotel-lobby-_dS27XGgRyQ",
-            set: (v: string)=> v === "" ? "https://unsplash.com/photos/coconut-palm-trees-in-hotel-lobby-_dS27XGgRyQ" : v,
-        }
+        url: String,
+        filename: String
     },
 
     price: {
@@ -54,6 +58,17 @@ const listingSchema = new Schema<IListing>({
     owner: {
         type: Schema.Types.ObjectId,
         ref: "User"
+    },
+    geometry: {
+        type: {
+            type: String,
+            enum: ['Point'],
+            required: true
+        },
+        coordinates: {
+            type: [Number],
+            required: true
+        }
     }
 })
 
