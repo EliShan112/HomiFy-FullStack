@@ -1,39 +1,43 @@
-import { Router } from "express";
-import { validateListing } from "../middlewares/validateListings.js";
-import asyncWrap from "../utils/asyncwrap.js";
-import { isAuthenticated } from "../middlewares/isAuthenticated.js";
-import { isOwner } from "../middlewares/isOwner.js";
-import {
-  index,
-  getListing,
-  createNewListing,
-  updateListing,
-  destroyListing,
-} from "../controllers/listingController.js";
-import upload from "../configs/storage.js";
+  import { Router } from "express";
+  import { validateListing } from "../middlewares/validateListings.js";
+  import asyncWrap from "../utils/asyncwrap.js";
+  import { isAuthenticated } from "../middlewares/isAuthenticated.js";
+  import { isOwner } from "../middlewares/isOwner.js";
+  import {
+    indexListing,
+    getListing,
+    createNewListing,
+    updateListing,
+    destroyListing,
+    searchListings,
+  } from "../controllers/listingController.js";
+  import upload from "../configs/storage.js";
 
-const router = Router();
+  const router = Router();
 
-router.get("/", asyncWrap(index));
+  router.get("/", asyncWrap(indexListing));
 
-router.post(
-  "/new",
-  isAuthenticated,
-  upload.single("image"),
-  validateListing,
-  asyncWrap(createNewListing)
-);
+  router.get('/search', asyncWrap(searchListings));
 
-router
-  .route("/:id")
-  .get(asyncWrap(getListing))
-  .put(
+  router.post(
+    "/new",
     isAuthenticated,
-    isOwner,
     upload.single("image"),
     validateListing,
-    asyncWrap(updateListing)
-  )
-  .delete(isAuthenticated, isOwner, asyncWrap(destroyListing));
+    asyncWrap(createNewListing)
+  );
 
-export default router;
+
+  router
+    .route("/:id")
+    .get(asyncWrap(getListing))
+    .put(
+      isAuthenticated,
+      isOwner,
+      upload.single("image"),
+      validateListing,
+      asyncWrap(updateListing)
+    )
+    .delete(isAuthenticated, isOwner, asyncWrap(destroyListing));
+
+  export default router;

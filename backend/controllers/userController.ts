@@ -15,12 +15,6 @@ export const userSignUp = async (req: Request, res: Response, next: NextFunction
     const newUser = new User({ email, username });
     const registeredUser = await User.register(newUser, password);
 
-    // const cleanUser = {
-    //   _id: registeredUser._id,
-    //   username: registeredUser.username,
-    //   email: registeredUser.email,
-    // };
-
     req.login(registeredUser, (err) => {
         if (err) return next(err);
         res.status(201).json({
@@ -78,6 +72,7 @@ export const userLogOut = (req: Request, res: Response, next: NextFunction) => {
         if(err){
             return next(err);
         }
+        res.status(200).json({ message: "Logged out successfully" });
     })
 }
 

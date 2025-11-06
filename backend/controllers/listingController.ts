@@ -4,7 +4,7 @@ import { v2 as cloudinary } from "cloudinary";
 import axios from "axios";
 import ExpressError from "../utils/ExpressError.js";
 
-export const index = async (req: Request, res: Response) => {
+export const indexListing = async (req: Request, res: Response) => {
   const listings = await Listing.find({});
   res.json(listings);
 };
@@ -23,7 +23,11 @@ export const getListing = async (req: Request, res: Response) => {
 };
 
 // Creating the new listing
-export const createNewListing = async (req: Request, res: Response, next: NextFunction) => {
+export const createNewListing = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
   if (!req.user) {
     console.log("no req.user");
     return res
@@ -56,29 +60,32 @@ export const createNewListing = async (req: Request, res: Response, next: NextFu
 
   try {
     // Format the URL for the Nominatim API
-    const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(location)}&format=json&limit=1`;
+    const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      location
+    )}&format=json&limit=1`;
 
     // Fetch the coordinates
     const geoRes = await axios(geoUrl, {
-      headers: {'User-Agent': "Homify"}
-    })
+      headers: { "User-Agent": "Homify/1.0 (mailto:asifkausar112@gmail.com)" },
+    });
 
-    if(!geoRes.data || geoRes.data.length === 0){
-      return res.status(400).json({message: "Could not find coordinates for this location"});
+    if (!geoRes.data || geoRes.data.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Could not find coordinates for this location" });
     }
 
     // Create the geometry object [longitude, latitude]
     geometry = {
-      type: 'Point',
+      type: "Point",
       coordinates: [
         parseFloat(geoRes.data[0].lon), //longitude
-        parseFloat(geoRes.data[0].lat) //latitude
-      ]
-    }
-
+        parseFloat(geoRes.data[0].lat), //latitude
+      ],
+    };
   } catch (err) {
     console.error("Geocoding service failed:", err);
-      return next(new ExpressError(500, "Geocoding service failed."));
+    return next(new ExpressError(500, "Geocoding service failed."));
   }
 
   const newListing = new Listing({
@@ -111,29 +118,29 @@ export const updateListing = async (req: Request, res: Response) => {
   // Updating all text fields from listing document that I will get from req.body
   Object.assign(listing, req.body);
 
-  if(req.body.location){
-    console.log("Location changed, re-geocoding...")
+  if (req.body.location) {
+    console.log("Location changed, re-geocoding...");
     const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
-        req.body.location
-      )}&format=json&limit=1`;
+      req.body.location
+    )}&format=json&limit=1`;
 
-      const geoRes = await axios(geoUrl, {
-        headers: {"User-Agent": "Homify"},
-      });
+    const geoRes = await axios(geoUrl, {
+      headers: { "User-Agent": "Homify/1.0 (mailto:asifkausar112@gmail.com)" },
+    });
 
-      if(!geoRes.data || geoRes.data.length === 0){
-        return res
-          .status(400)
-          .json({ message: "Could not find coordinates for this location" });
-      }
+    if (!geoRes.data || geoRes.data.length === 0) {
+      return res
+        .status(400)
+        .json({ message: "Could not find coordinates for this location" });
+    }
 
-      listing.geometry = {
-        type: "Point",
-        coordinates: [
-          parseFloat(geoRes.data[0].lon),
-          parseFloat(geoRes.data[0].lat)
-        ]
-      }
+    listing.geometry = {
+      type: "Point",
+      coordinates: [
+        parseFloat(geoRes.data[0].lon),
+        parseFloat(geoRes.data[0].lat),
+      ],
+    };
   }
 
   // Checking if a new file was uploaded
@@ -160,7 +167,71 @@ export const updateListing = async (req: Request, res: Response) => {
   res.json(listing);
 };
 
+export const searchListings = async (
+  req: Request,
+  res: Response,
+  next: NextFunction
+) => {
+  const query = req.query.q as string;
+  if (!query) {
+    return res.status(400).json({ message: "Search query is required." });
+  }
 
+  // Geocode the search query
+  let coordinates: number[];
+
+  try {
+    const geoUrl = `https://nominatim.openstreetmap.org/search?q=${encodeURIComponent(
+      query
+    )}&format=json&limit=1`;
+
+    const geoRes = await axios(geoUrl, {
+      headers: { "User-Agent": "Homify/1.0 (mailto:asifkausar112@gmail.com)"},
+      timeout: 10000
+    });
+
+    if (!geoRes.data || geoRes.data.length === 0) {
+      return res.json([]);
+    }
+
+    coordinates = [
+      parseFloat(geoRes.data[0].lon),
+      parseFloat(geoRes.data[0].lat),
+    ];
+  } catch (err) {
+    console.error("--- GEOCODING SERVICE ERROR ---");
+    if (axios.isAxiosError(err)) {
+    // This logs the specific network error, e.g., "Network Error", "ECONNRESET"
+    console.error("Axios Error Message:", err.message); 
+    console.error("Axios Error Code:", err.code);
+
+    // We still log these just in case
+    console.error("Axios Status:", err.response?.status);
+    console.error("Axios Data:", err.response?.data);
+  } else {
+    // Log any other non-Axios error
+    console.error("Raw Error:", err);
+  }
+    return next(new ExpressError(500, "Geocoding service failed."));
+  }
+
+  // Use $near to find listings
+  // This finds all listings near the [lon, lat]
+  // within 50 kilometers (50000 meters)
+  const listings = await Listing.find({
+    geometry: {
+      $near: {
+        $geometry: {
+          type: "Point",
+          coordinates: coordinates,
+        },
+        $maxDistance: 50000,
+      },
+    },
+  });
+
+  res.json(listings);
+};
 
 // deleting the listing
 export const destroyListing = async (req: Request, res: Response) => {

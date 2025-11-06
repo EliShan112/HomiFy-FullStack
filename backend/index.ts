@@ -12,6 +12,8 @@ import session from "express-session";
 import type { SessionOptions } from "express-session"
 import userRoutes from "./routes/userRoute.js";
 import dotenv from 'dotenv';
+import asyncWrap from "./utils/asyncwrap.js";
+import { indexListing } from "./controllers/listingController.js";
 
 dotenv.config();
 
@@ -25,8 +27,7 @@ app.use(cors({
 
 
 //Db connection
-const MONGO_URL = "mongodb://127.0.0.1:27017/Airbnb";
-
+const MONGO_URI = process.env.MONGO_URI;
 main()
     .then(()=>{
         console.log("Connected to db");
@@ -36,12 +37,12 @@ main()
     })
 
 async function main(){
-    await mongoose.connect(MONGO_URL);
+    await mongoose.connect(MONGO_URI as string);
 }
 
 //session options
 const sessionOptions: SessionOptions = {
-    secret: "TheGreatSecretCodeOfEliShan112221",
+    secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
     cookie:{
@@ -70,9 +71,6 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 //Routes
-app.get('/', (req: Request, res: Response)=>{
-    res.json({message: "This is homepage"});
-})
 app.use("/listing/:id/review", reviewRoutes);
 app.use("/", userRoutes);
 

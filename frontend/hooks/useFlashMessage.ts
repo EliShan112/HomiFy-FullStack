@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 
 export type FlashMessage = {
-  type: "success" | "error";
+  type: "success" | "error" | "info";
   text: string;
 };
 

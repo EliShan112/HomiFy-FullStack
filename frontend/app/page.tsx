@@ -1,7 +1,5 @@
+import ListingPage from "./listing/page";
+
 export default function Home() {
-  return (
-    <div className="font-sans ">
-      
-    </div>
-  );
+  return <ListingPage />;
 }
