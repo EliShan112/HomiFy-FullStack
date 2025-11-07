@@ -1,4 +1,5 @@
 "use client";
+import 'leaflet/dist/leaflet.css';
 import axios from "axios";
 import { useParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
@@ -14,13 +15,12 @@ import MessageFlash from "@/components/MessageFlash";
 import { useAuth } from "@/context/authContext";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
-import 'leaflet/dist/leaflet.css';
 import { useProtectedApi } from "@/hooks/useProtectedApi";
 
 
 
 
-const page = () => {
+const ListingDetailPage = () => {
   const { id } = useParams();
   const router = useRouter();
   const [listings, setListings] = useState<Listing | null>(null);
@@ -32,13 +32,13 @@ const page = () => {
   const { messageFlash, setMessageFlash } = useFlashMessage(3000);
 
   const Map = useMemo(
-  () =>
-    dynamic(() => import("@/components/Map"), {
-      loading: () => <p>Loading map...</p>,
-      ssr: false,
-    }),
-  []
-);
+    () =>
+      dynamic(() => import('@/components/Map'), { 
+        loading: () => <p>Loading map...</p>,
+        ssr: false,
+      }),
+    []
+  );
 
   useEffect(() => {
     const fetchData = async () => {
@@ -56,7 +56,7 @@ const page = () => {
     };
 
     if (id) fetchData();
-  }, [id]);
+  }, [id, api]);
 
   if (!listings) return <p>loading...</p>;
 
@@ -170,4 +170,4 @@ const page = () => {
   );
 };
 
-export default page;
+export default ListingDetailPage;

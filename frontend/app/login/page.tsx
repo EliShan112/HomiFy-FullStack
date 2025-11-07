@@ -8,7 +8,7 @@ import { useFlashMessage } from '@/hooks/useFlashMessage';
 import { useAuth } from '@/context/authContext';
 import { useProtectedApi } from '@/hooks/useProtectedApi';
 
-const login = () => {
+const Login = () => {
 
   const router = useRouter();
   const searchParams = useSearchParams();
@@ -153,4 +153,4 @@ const login = () => {
   )
 }
 
-export default login
+export default Login

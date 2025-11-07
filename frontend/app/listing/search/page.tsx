@@ -38,13 +38,13 @@ const Search = () => {
       }
     };
     fetchListing();
-  }, [query]);
+  }, [query, api]);
 
   if (loading) {
     return (
       <div className="max-w-6xl mx-auto p-6">
         <h2 className="text-2xl font-bold mb-4">
-          Searching for: "{query}"
+          Searching for: &quot;{query}&quot;
         </h2>
         <p>Loading results...</p>
       </div>
@@ -63,7 +63,7 @@ const Search = () => {
   return (
     <div className="max-w-6xl mx-auto p-6">
       <h2 className="text-2xl font-bold mb-4">
-        Showing results for: "{query}"
+        Showing results for: &quot;{query}&quot;
       </h2>
       {listings.length === 0 ? (
         <p>No listings found for this location.</p>

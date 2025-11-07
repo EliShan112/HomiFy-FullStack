@@ -8,20 +8,30 @@ import { useProtectedApi } from "@/hooks/useProtectedApi";
 export default function ListingPage() {
   const api = useProtectedApi();
   const [listings, setListings] = useState<Listing[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
     const fetchListings = async () => {
+      setLoading(true)
       try {
         const res = await api.get(`/listing`);
         setListings(res.data);
       } catch (err) {
         console.log("Listing error", err);
+      }finally{
+        setLoading(false)
       }
     };
     fetchListings();
-  }, []);
+  }, [api]);
 
-  if (!listings) return <p>Loading...</p>;
+  if (loading) {
+    return (
+      <div className="flex justify-center items-center h-screen">
+        <p>Loading listings...</p>
+      </div>
+    );
+  }
 
   return (
     <div className="w-full overflow-x-hidden">

@@ -9,7 +9,7 @@ import { useFlashMessage } from "@/hooks/useFlashMessage";
 import { IFormState } from "../../new/page";
 import MessageFlash from "@/components/MessageFlash";
 
-const edit = () => {
+const Edit = () => {
   const router = useRouter();
   const { id } = useParams();
   const api = useProtectedApi();
@@ -25,10 +25,15 @@ const edit = () => {
 
   const [newImageFile, setNewImageFile] = useState<File | null>(null);
   const [existingImageFile, setExistingImageFile] = useState<string>("");
-  const [loading, setLoading] = useState(false);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    if (!id) {
+      setLoading(false); 
+      return;
+    }
     const fetchingData = async () => {
+      setLoading(true);
       try {
         const res = await api.get(`/listing/${id}`);
         const { image, ...textData } = res.data;
@@ -38,11 +43,13 @@ const edit = () => {
       } catch (err) {
         console.log("Couldn't fetch the data", err);
         setMessageFlash({ type: "error", text: "Failed to load listing" });
+      }finally{
+        setLoading(false);
       }
     };
 
     if (id) fetchingData();
-  }, [id]);
+  }, [id, api, setMessageFlash]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const { name, value, type, files } = e.target;
@@ -99,11 +106,19 @@ const edit = () => {
     }
   };
 
+  if (loading && !form.title) { 
+    return (
+      <div className="max-w-lg mx-auto mt-10 p-8">
+        <p>Loading...</p>
+      </div>
+    );
+  }
+
   return (
     <div className="max-w-lg mx-auto mt-10 p-8  rounded-xl shadow-lg">
       {messageFlash && (
-        <MessageFlash type={messageFlash?.type} text={messageFlash?.text} />
-      )}
+        <MessageFlash type={messageFlash.type} text={messageFlash.text} />
+      )}  
       <h2 className="text-2xl font-bold mb-6 text-center text-black">
         Editing...
       </h2>
@@ -111,11 +126,11 @@ const edit = () => {
         form={form}
         handleSubmit={handleSubmit}
         handleChange={handleChange}
-        buttonText={loading ? 'Editing...' : 'Edit'}
+        buttonText={loading ? 'Saving...' : 'Edit'}
         imageUrlPreview={existingImageFile}
       />
     </div>
   );
 };
 
-export default edit;
+export default Edit;
