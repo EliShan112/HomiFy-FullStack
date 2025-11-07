@@ -20,7 +20,7 @@ const app = express();
 
 //Cors
 app.use(cors({
-    origin: "http://localhost:3000",
+    origin: process.env.CLIENT_URL,
     credentials: true
 }));
 
@@ -62,7 +62,7 @@ const sessionOptions: SessionOptions = {
         httpOnly: true,
         maxAge: 7 * 24 * 60 * 60 * 1000,
         sameSite: "lax",
-        secure: false
+        secure: true
     }
 
 }
