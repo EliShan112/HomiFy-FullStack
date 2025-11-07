@@ -6,7 +6,7 @@ import React, { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { useProtectedApi } from "@/hooks/useProtectedApi";
 import { useFlashMessage } from "@/hooks/useFlashMessage";
-import { IFormState } from "../../new/page";
+import { IFormState } from "../../new/NewContent";
 import MessageFlash from "@/components/MessageFlash";
 
 const Edit = () => {

@@ -1,83 +1,26 @@
-"use client";
-export const dynamic = "force-dynamic";
+import { Suspense } from 'react'
+import SearchContent from './SearchContent'
 
-
-import ListingCard from "@/components/ListingCard";
-import { useProtectedApi } from "@/hooks/useProtectedApi";
-import { Listing } from "@/types/listing";
-import { useSearchParams } from "next/navigation";
-import React, { useEffect, useState } from "react";
-
-const Search = () => {
-  const api = useProtectedApi();
-  const searchParams = useSearchParams();
-  const query = searchParams.get("q");
-
-  const [listings, setListings] = useState<Listing[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
-
-  useEffect(() => {
-    if (!query) {
-      setLoading(false);
-      return;
-    }
-
-    const fetchListing = async () => {
-      setLoading(true);
-      setError(null);
-
-      try {
-        const res = await api.get(
-          `/listing/search?q=${encodeURIComponent(query)}`
-        );
-        setListings(res.data);
-      } catch (err) {
-        console.error("Search failed:", err);
-        setError("Could not load search results.");
-      }finally{
-        setLoading(false);
-      }
-    };
-    fetchListing();
-  }, [query, api]);
-
-  if (loading) {
-    return (
-      <div className="max-w-6xl mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-4">
-          Searching for: &quot;{query}&quot;
-        </h2>
-        <p>Loading results...</p>
-      </div>
-    );
-  }
-
-  if (error) {
-    return (
-      <div className="max-w-6xl mx-auto p-6">
-        <h2 className="text-2xl font-bold mb-4">Error</h2>
-        <p className="text-red-500">{error}</p>
-      </div>
-    );
-  }
-
+export default function SearchPage() {
   return (
-    <div className="max-w-6xl mx-auto p-6">
-      <h2 className="text-2xl font-bold mb-4">
-        Showing results for: &quot;{query}&quot;
-      </h2>
-      {listings.length === 0 ? (
-        <p>No listings found for this location.</p>
-      ) : (
+    <Suspense fallback={
+      <div className="max-w-6xl mx-auto p-6">
+        <h2 className="text-2xl font-bold mb-4">Searching...</h2>
         <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-6">
-            {listings.map((listing)=>(
-                <ListingCard key={listing._id} listing={listing}/>
-            ))}
+          {[...Array(8)].map((_, i) => (
+            <div key={i} className="animate-pulse">
+              <div className="bg-gray-200 h-48 rounded-t-lg"></div>
+              <div className="p-4 space-y-2">
+                <div className="h-4 bg-gray-200 rounded"></div>
+                <div className="h-4 bg-gray-200 rounded w-3/4"></div>
+                <div className="h-4 bg-gray-200 rounded w-1/2"></div>
+              </div>
+            </div>
+          ))}
         </div>
-      )}
-    </div>
-  );
-};
-
-export default Search;
+      </div>
+    }>
+      <SearchContent />
+    </Suspense>
+  )
+}
