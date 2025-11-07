@@ -9,11 +9,10 @@ import passport from "passport";
 import {Strategy as LocalStrategy} from "passport-local";
 import { User } from "./models/user.js";
 import session from "express-session";
+import MongoStore from 'connect-mongo'
 import type { SessionOptions } from "express-session"
 import userRoutes from "./routes/userRoute.js";
 import dotenv from 'dotenv';
-import asyncWrap from "./utils/asyncwrap.js";
-import { indexListing } from "./controllers/listingController.js";
 
 dotenv.config();
 
@@ -40,8 +39,22 @@ async function main(){
     await mongoose.connect(MONGO_URI as string);
 }
 
+//mongostore
+const store = MongoStore.create({
+    mongoUrl: MONGO_URI,
+    crypto: {
+        secret: process.env.SESSION_SECRET as string
+    },
+    touchAfter: 24 * 3600, //in seconds
+});
+
+store.on("error", (err)=> {
+    console.log("ERROR IN MONGO STORE", err);
+})
+
 //session options
 const sessionOptions: SessionOptions = {
+    store,
     secret: process.env.SESSION_SECRET as string,
     resave: false,
     saveUninitialized: true,
@@ -53,6 +66,7 @@ const sessionOptions: SessionOptions = {
     }
 
 }
+
 
 app.use(session(sessionOptions))
 

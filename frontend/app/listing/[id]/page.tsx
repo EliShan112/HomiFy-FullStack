@@ -134,9 +134,11 @@ const page = () => {
           </div>
         )}
 
-      {messageFlash && (
-        <MessageFlash type={messageFlash.type} text={messageFlash.text} />
+      <div className="mt-3">
+        {messageFlash && (
+        <MessageFlash type={messageFlash.type} text={messageFlash.text}/>
       )}
+      </div>
 
       <hr className="mt-3" />
       <StarRating
