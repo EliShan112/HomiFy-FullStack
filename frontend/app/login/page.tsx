@@ -31,7 +31,7 @@ const login = () => {
   e.preventDefault();
   setLoading(true);
   try {
-    const res = await api.post('http://localhost:4000/login', form, { withCredentials: true });
+    const res = await api.post('/login', form, { withCredentials: true });
 
     if (!res?.data?.user) {
       setMessageFlash({ type: 'error', text: "Couldn't get user data" });

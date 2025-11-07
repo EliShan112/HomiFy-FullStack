@@ -6,6 +6,7 @@ import React, { useState } from 'react'
 import MessageFlash from './MessageFlash';
 import Link from 'next/link';
 import { useAuth } from '@/context/authContext';
+import { useProtectedApi } from '@/hooks/useProtectedApi';
 
 interface StarRatingProps {
     listingId : string;
@@ -18,6 +19,7 @@ const StarRating : React.FC<StarRatingProps> = ({listingId, onNewReview}) => {
     const [comment, setComment] = useState("")
 
     const {user} = useAuth()
+    const api = useProtectedApi();
     const {setMessageFlash, messageFlash} = useFlashMessage(3000);
 
     //textarea change
@@ -28,7 +30,7 @@ const StarRating : React.FC<StarRatingProps> = ({listingId, onNewReview}) => {
     //submit button
     const submitReview = async () => {
         try {
-            const res = await axios.post(`http://localhost:4000/listing/${listingId}/review`, {rating, comment}, {withCredentials: true});
+            const res = await api.post(`/listing/${listingId}/review`, {rating, comment}, {withCredentials: true});
             const newReview: Review = res.data.review;
             onNewReview(newReview);
             setMessageFlash({type: 'success', text: "Thanks for the review!"});

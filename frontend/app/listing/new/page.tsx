@@ -81,7 +81,7 @@ const New = () => {
     }
 
     try {
-      await api.post("http://localhost:4000/listing/new", formData, {
+      await api.post(`/listing/new`, formData, {
         withCredentials: true,
       });
       setMessageFlash({
@@ -94,8 +94,8 @@ const New = () => {
         setMessageFlash({ type: "error", text: err.response?.data.message });
       }
       console.log("Couldn't send post request", err);
-    }finally{
-        setLoading(false);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -111,7 +111,7 @@ const New = () => {
         form={form}
         handleChange={handleChange}
         handleSubmit={handleSubmit}
-        buttonText={loading ? "Uploading..." : 'Add new listing'}
+        buttonText={loading ? "Uploading..." : "Add new listing"}
         imageUrlPreview={imageUrlPreview}
       />
     </div>

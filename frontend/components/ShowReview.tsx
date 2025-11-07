@@ -5,6 +5,7 @@ import { Review } from '@/types/review';
 import axios from 'axios';
 import { FlashMessage } from '@/hooks/useFlashMessage';
 import { useAuth } from '@/context/authContext';
+import { useProtectedApi } from '@/hooks/useProtectedApi';
 
 interface ShowReviewProps {
   reviews: Review[];
@@ -32,11 +33,12 @@ const ShowReview: React.FC<ShowReviewProps> = ({
   setMessageFlash,
 }) => {
   const { user, loading } = useAuth();
+  const api = useProtectedApi();
 
   const handleDelete = async (reviewId: string) => {
     try {
-      await axios.delete(
-        `http://localhost:4000/listing/${listingId}/review/${reviewId}`,
+      await api.delete(
+        `/listing/${listingId}/review/${reviewId}`,
         { withCredentials: true }
       );
       setReviews((prev) => prev.filter((r) => r._id !== reviewId));

@@ -1,17 +1,18 @@
 "use client";
 
-import axios from "axios";
 import { Listing } from "@/types/listing";
 import { useEffect, useState } from "react";
 import ListingCard from "@/components/ListingCard";
+import { useProtectedApi } from "@/hooks/useProtectedApi";
 
 export default function ListingPage() {
+  const api = useProtectedApi();
   const [listings, setListings] = useState<Listing[]>([]);
 
   useEffect(() => {
     const fetchListings = async () => {
       try {
-        const res = await axios.get("http://localhost:4000/listing");
+        const res = await api.get(`/listing`);
         setListings(res.data);
       } catch (err) {
         console.log("Listing error", err);

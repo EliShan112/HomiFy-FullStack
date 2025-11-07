@@ -1,12 +1,13 @@
 "use client";
 
 import ListingCard from "@/components/ListingCard";
+import { useProtectedApi } from "@/hooks/useProtectedApi";
 import { Listing } from "@/types/listing";
-import axios from "axios";
 import { useSearchParams } from "next/navigation";
 import React, { useEffect, useState } from "react";
 
 const Search = () => {
+  const api = useProtectedApi();
   const searchParams = useSearchParams();
   const query = searchParams.get("q");
 
@@ -25,8 +26,8 @@ const Search = () => {
       setError(null);
 
       try {
-        const res = await axios.get(
-          `http://localhost:4000/listing/search?q=${encodeURIComponent(query)}`
+        const res = await api.get(
+          `/listing/search?q=${encodeURIComponent(query)}`
         );
         setListings(res.data);
       } catch (err) {

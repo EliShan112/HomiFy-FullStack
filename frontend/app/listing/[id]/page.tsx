@@ -15,6 +15,7 @@ import { useAuth } from "@/context/authContext";
 import dynamic from "next/dynamic";
 import { useMemo } from "react";
 import 'leaflet/dist/leaflet.css';
+import { useProtectedApi } from "@/hooks/useProtectedApi";
 
 
 
@@ -26,6 +27,7 @@ const page = () => {
   const [reviews, setReviews] = useState<Review[]>([]);
   const [loading, setLoading] = useState(false);
   const { user } = useAuth();
+  const api = useProtectedApi();
 
   const { messageFlash, setMessageFlash } = useFlashMessage(3000);
 
@@ -42,7 +44,7 @@ const page = () => {
     const fetchData = async () => {
       try {
         // Fetching listing
-        const listingRes = await axios.get(`http://localhost:4000/listing/${id}`);
+        const listingRes = await api.get(`/listing/${id}`);
         console.log("Listing data:", listingRes.data);
         console.log("Reviews:", listingRes.data.review);
         setListings(listingRes.data);
@@ -72,7 +74,7 @@ const page = () => {
   const handleDelete = async () => {
     setLoading(true);
     try {
-      await axios.delete(`http://localhost:4000/listing/${id}`, {
+      await api.delete(`/listing/${id}`, {
         withCredentials: true,
       });
       setMessageFlash({ type: "success", text: "Sucessfully deleted!" });

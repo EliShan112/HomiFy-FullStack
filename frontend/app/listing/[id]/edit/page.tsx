@@ -30,7 +30,7 @@ const edit = () => {
   useEffect(() => {
     const fetchingData = async () => {
       try {
-        const res = await axios.get(`http://localhost:4000/listing/${id}`);
+        const res = await api.get(`/listing/${id}`);
         const { image, ...textData } = res.data;
 
         setForm(textData);
@@ -77,7 +77,7 @@ const edit = () => {
     }
 
     try {
-      await api.put(`http://localhost:4000/listing/${id}`, formData, {
+      await api.put(`/listing/${id}`, formData, {
         withCredentials: true,
       });
 

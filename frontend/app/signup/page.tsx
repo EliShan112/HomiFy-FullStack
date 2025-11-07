@@ -3,6 +3,7 @@
 import MessageFlash from '@/components/MessageFlash';
 import { useAuth } from '@/context/authContext';
 import { useFlashMessage } from '@/hooks/useFlashMessage';
+import { useProtectedApi } from '@/hooks/useProtectedApi';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
 import React, { useEffect, useState } from 'react'
@@ -16,7 +17,7 @@ interface SignupFormData {
 const page = () => {
 
     const router = useRouter();
-
+    const api = useProtectedApi();
     const [form, setForm] = useState<SignupFormData>({
         email: "",
         username: "",
@@ -35,7 +36,7 @@ const page = () => {
         e.preventDefault();
         setLoading(true);
         try {
-            const res = await axios.post("http://localhost:4000/signup", form, {withCredentials:true});
+            const res = await api.post("/signup", form, {withCredentials:true});
 
             setUser(res.data.user)
 
