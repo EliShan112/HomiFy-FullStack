@@ -2,7 +2,7 @@
 
 import axios from 'axios';
 import { useRouter, useSearchParams } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 import MessageFlash from '@/components/MessageFlash';
 import { useFlashMessage } from '@/hooks/useFlashMessage';
 import { useAuth } from '@/context/authContext';
@@ -45,7 +45,7 @@ const Login = () => {
     const redirectTo = searchParams.get('redirectTo');
     router.push(redirectTo || '/listing');
 
-  } catch (err: any) {
+  } catch (err) {
     let msg = "Got some error during login";
 
     if (axios.isAxiosError(err)) {

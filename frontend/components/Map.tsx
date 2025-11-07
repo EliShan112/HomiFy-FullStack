@@ -4,7 +4,7 @@ import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet'; // Import L
 
 // --- This is the standard hack to fix the default icon paths ---
-// @ts-ignore
+// @ts-expect-error Fix Leaflet icon path issue
 delete L.Icon.Default.prototype._getIconUrl;
 
 /* eslint-disable @typescript-eslint/no-require-imports */

@@ -160,7 +160,7 @@ const ListingDetailPage = () => {
       {mapCenter ? (
         <>
         <hr className='mt-3' />
-        <h3>Where you'll be</h3>
+        <h3>Where you&apos;ll be</h3>
         <Map center={mapCenter}/></>
       ) : (
         <p>Map location is not available for this listing.</p>

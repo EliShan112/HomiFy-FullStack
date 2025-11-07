@@ -6,7 +6,7 @@ import { useFlashMessage } from '@/hooks/useFlashMessage';
 import { useProtectedApi } from '@/hooks/useProtectedApi';
 import axios from 'axios';
 import { useRouter } from 'next/navigation';
-import React, { useEffect, useState } from 'react'
+import React, { useState } from 'react'
 
 interface SignupFormData {
     email: string;
@@ -14,7 +14,7 @@ interface SignupFormData {
     password: string;
 }
 
-const page = () => {
+const SignUp = () => {
 
     const router = useRouter();
     const api = useProtectedApi();
@@ -159,4 +159,4 @@ const page = () => {
   )
 }
 
-export default page
+export default SignUp;

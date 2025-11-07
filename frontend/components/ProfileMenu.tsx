@@ -10,7 +10,6 @@ import { useAuth } from "@/context/authContext";
 import useOutsideClick from "@/hooks/useOutsideClick";
 import { useProtectedApi } from "@/hooks/useProtectedApi";
 import { FlashMessage } from '@/hooks/useFlashMessage';
-import MessageFlash from "./MessageFlash";
 
 interface ProfileMenuProps{
     setMessageFlash: React.Dispatch<React.SetStateAction<FlashMessage | null >>
