@@ -1,4 +1,5 @@
 'use client';
+export const dynamic = "force-dynamic";
 
 import MessageFlash from '@/components/MessageFlash';
 import { useAuth } from '@/context/authContext';
