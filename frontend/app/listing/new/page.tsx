@@ -1,4 +1,6 @@
 "use client";
+export const dynamic = "force-dynamic";
+
 import ListingForm from "@/components/ListingForm";
 import MessageFlash from "@/components/MessageFlash";
 import { useFlashMessage } from "@/hooks/useFlashMessage";
