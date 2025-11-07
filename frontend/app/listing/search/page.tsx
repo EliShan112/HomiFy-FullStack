@@ -1,4 +1,6 @@
 "use client";
+export const dynamic = "force-dynamic";
+
 
 import ListingCard from "@/components/ListingCard";
 import { useProtectedApi } from "@/hooks/useProtectedApi";
