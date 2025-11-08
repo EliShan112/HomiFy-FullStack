@@ -1,5 +1,6 @@
 'use client';
 
+import { useProtectedApi } from "@/hooks/useProtectedApi";
 import axios from "axios";
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 
@@ -15,13 +16,14 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType | undefined>(undefined);
 
 export const AuthProvider = ({children}: {children: ReactNode}) => {
+  const api = useProtectedApi();
     const [user, setUser] = useState<User>(null);
     const [loading, setLoading] = useState(true);
 
     useEffect(()=>{
       const checkAuth = async () => {
         try {
-          const res = await axios.get('http://localhost:4000/check-auth', {withCredentials: true});
+          const res = await api.get('/check-auth', {withCredentials: true});
           if(res.data.isAuthenticated){
             setUser(res.data.user)
           }
@@ -34,7 +36,7 @@ export const AuthProvider = ({children}: {children: ReactNode}) => {
 
       checkAuth();
       
-    },[]);
+    },[api]);
 
     return (
         <AuthContext.Provider value={{user, setUser, loading}}>
