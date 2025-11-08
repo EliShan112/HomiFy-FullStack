@@ -2,6 +2,7 @@
 import React from 'react';
 import { MapContainer, TileLayer, Marker, Popup } from 'react-leaflet';
 import L from 'leaflet'; // Import L
+import 'leaflet/dist/leaflet.css';
 
 // --- This is the standard hack to fix the default icon paths ---
 // @ts-expect-error Fix Leaflet icon path issue
