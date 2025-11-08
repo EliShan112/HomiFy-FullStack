@@ -23,7 +23,7 @@ export default function Navbar() {
 
         <SearchBar />
 
-        <div className="w-20 flex justify-end">
+        <div className="w-20 flex justify-end ml-3">
           {/* pass flash setter so ProfileMenu can show success/error */}
           <ProfileMenu setMessageFlash={setMessageFlash} />
         </div>
